@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shopify/features/ui/home_page.dart';
-import 'package:shopify/features/ui/homescreen.dart';
 import 'package:shopify/features/ui/signup_page.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hive/hive.dart';

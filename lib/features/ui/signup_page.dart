@@ -4,21 +4,18 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 
 class SignupPage extends StatefulWidget {
-  
   const SignupPage({super.key});
-  
 
   @override
   State<SignupPage> createState() => _SignupPageState();
 }
 
 class _SignupPageState extends State<SignupPage> {
-    String locationMsg = "Press the button to get location";
+  String locationMsg = "Press the button to get location";
   Future<void> getCurrentLocation() async {
     bool serviceEnabled;
     LocationPermission permission;
 
-    // Check if location service is enabled
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       setState(() {
@@ -27,7 +24,6 @@ class _SignupPageState extends State<SignupPage> {
       return;
     }
 
-    // Check permission
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
@@ -46,7 +42,6 @@ class _SignupPageState extends State<SignupPage> {
       return;
     }
 
-    // Get current position
     Position position = await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.high,
     );
@@ -56,29 +51,24 @@ class _SignupPageState extends State<SignupPage> {
           "Latitude: ${position.latitude}\nLongitude: ${position.longitude}";
     });
   }
-  // final TextEditingController nameCtrl = TextEditingController();
-  // final TextEditingController emailCtrl = TextEditingController();
-  // final TextEditingController locationCtrl = TextEditingController();
-  // final TextEditingController passCtrl = TextEditingController();
-  // final TextEditingController confirmCtrl = TextEditingController();
-   final nameCtrl = TextEditingController();
+
+  final nameCtrl = TextEditingController();
   final emailCtrl = TextEditingController();
   final passCtrl = TextEditingController();
 
   bool agreeTerms = false;
   bool showPassword = false;
 
- void signup() {
+  void signup() {
     final box = Hive.box('logindata');
     List users = box.get('users', defaultValue: []);
 
-    bool exists =
-        users.any((u) => u['email'] == emailCtrl.text.trim());
+    bool exists = users.any((u) => u['email'] == emailCtrl.text.trim());
 
     if (exists) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("User already exists")),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("User already exists")));
       return;
     }
 
@@ -90,9 +80,9 @@ class _SignupPageState extends State<SignupPage> {
 
     box.put('users', users);
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Signup successful")),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text("Signup successful")));
 
     Navigator.pop(context);
   }
@@ -130,7 +120,6 @@ class _SignupPageState extends State<SignupPage> {
               ),
             ),
 
-            /// 🔹 Body
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -138,7 +127,6 @@ class _SignupPageState extends State<SignupPage> {
                   children: [
                     const SizedBox(height: 24),
 
-                    /// 🔹 Logo
                     Container(
                       height: 64,
                       width: 64,
@@ -146,10 +134,7 @@ class _SignupPageState extends State<SignupPage> {
                         color: Colors.black,
                         borderRadius: BorderRadius.circular(16),
                         boxShadow: const [
-                          BoxShadow(
-                            blurRadius: 12,
-                            color: Colors.black26,
-                          )
+                          BoxShadow(blurRadius: 12, color: Colors.black26),
                         ],
                       ),
                       child: const Icon(
@@ -161,7 +146,6 @@ class _SignupPageState extends State<SignupPage> {
 
                     const SizedBox(height: 24),
 
-                 
                     const SizedBox(height: 8),
                     Text(
                       "Enter your details to create your account",
@@ -172,35 +156,34 @@ class _SignupPageState extends State<SignupPage> {
                     const SizedBox(height: 32),
 
                     _inputField(
-                        controller: nameCtrl,
+                      controller: nameCtrl,
                       label: "Full Name",
-                      // hint: "John Doe",
                       icon: Icons.person,
                     ),
 
                     const SizedBox(height: 16),
 
                     _inputField(
-                       controller: emailCtrl,
+                      controller: emailCtrl,
                       label: "Email Address",
-                      // hint: "name@example.com",
                       icon: Icons.mail,
                       keyboardType: TextInputType.emailAddress,
                     ),
 
-                    const SizedBox(height: 16),
-                      Text(
-                locationMsg,
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 18),
-              ),
-
-                    // _inputField(
-                    //   controller: locationCtrl,
-                    //   label: "Location",
-                    //   hint: "City, Country",
-                    //   icon: Icons.location_on,
-                    // ),
+                    const SizedBox(height: 20),
+                    Container(
+                      height: 56,
+                      width: 500,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: Colors.grey.shade400),
+                      ),
+                      child: Text(
+                        locationMsg,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(fontSize: 18),
+                      ),
+                    ),
 
                     Align(
                       alignment: Alignment.centerLeft,
@@ -216,11 +199,9 @@ class _SignupPageState extends State<SignupPage> {
                     _inputField(
                       controller: passCtrl,
                       label: "Password",
-                      // hint: "••••••••",
                       icon: showPassword
                           ? Icons.visibility
                           : Icons.visibility_off,
-                      // obscure: !showPassword,
                       onIconTap: () {
                         setState(() {
                           showPassword = !showPassword;
@@ -228,48 +209,10 @@ class _SignupPageState extends State<SignupPage> {
                       },
                     ),
 
-                    const SizedBox(height: 16),
-
-                    // _inputField(
-                    //   controller: confirmCtrl,
-                    //   label: "Confirm Password",
-                    //   hint: "••••••••",
-                    //   icon: Icons.lock,
-                    //   obscure: true,
-                    // ),
-
-                    const SizedBox(height: 16),
-
-                    // Row(
-                    //   children: [
-                    //     Checkbox(
-                    //       value: agreeTerms,
-                    //       onChanged: (val) {
-                    //         setState(() {
-                    //           agreeTerms = val!;
-                    //         });
-                    //       },
-                    //     ),
-                    //     Expanded(
-                    //       child: Text.rich(
-                    //         TextSpan(
-                    //           text: "I agree to the ",
-                    //           children: [
-                    //             TextSpan(
-                    //               text: "Terms & Conditions",
-                    //               style: const TextStyle(
-                    //                   fontWeight: FontWeight.bold),
-                    //             ),
-                    //           ],
-                    //         ),
-                    //       ),
-                    //     ),
-                    //   ],
-                    // ),
+                    const SizedBox(height: 36),
 
                     const SizedBox(height: 8),
 
-                    ///  Sign Up Button
                     SizedBox(
                       width: double.infinity,
                       height: 56,
@@ -290,14 +233,8 @@ class _SignupPageState extends State<SignupPage> {
                       ),
                     ),
 
-
-                 
-
                     const SizedBox(height: 94),
 
-
-
-                    /// 🔹 Footer
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -323,11 +260,9 @@ class _SignupPageState extends State<SignupPage> {
     );
   }
 
-  /// 🔹 Reusable Input
   Widget _inputField({
     required TextEditingController controller,
     required String label,
-    // required String hint,
     required IconData icon,
     bool obscure = false,
     TextInputType keyboardType = TextInputType.text,
@@ -336,29 +271,24 @@ class _SignupPageState extends State<SignupPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label,
-            style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
+        Text(
+          label,
+          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
+        ),
         const SizedBox(height: 6),
         TextField(
           controller: controller,
           obscureText: obscure,
           keyboardType: keyboardType,
           decoration: InputDecoration(
-            // hintText: hint,
-            suffixIcon: IconButton(
-              icon: Icon(icon),
-              onPressed: onIconTap,
-            ),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(14),
-            ),
+            suffixIcon: IconButton(icon: Icon(icon), onPressed: onIconTap),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
           ),
         ),
       ],
     );
   }
 
-  /// 🔹 Social Button
   Widget _socialButton({
     required IconData icon,
     required String text,
